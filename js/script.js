@@ -1,135 +1,65 @@
-let navbar = document.querySelector('.header .navbar')
+// Function to handle user signup
+function signupUser() {
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-document.querySelector('#menu-btn').onclick = () =>{
-  navbar.classList.add('active');
+    if (username && email && password) {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+
+        // Check if the email already exists
+        const userExists = users.some(user => user.email === email);
+
+        if (!userExists) {
+            users.push({ username, email, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Signup successful!');
+            // Redirect to login page after successful signup (if required)
+            window.location.href = 'login.html';
+        } else {
+            alert('Email already exists. Please use a different email or login.');
+        }
+    } else {
+        alert('All fields are required!');
+    }
 }
 
-document.querySelector('#close-navbar').onclick = () =>{
-  navbar.classList.remove('active');
-};
+// Function to handle user login
+function loginUser() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-let registerBtn = document.querySelector('.account-form .register-btn');
-let loginBtn = document.querySelector('.account-form .login-btn');
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
-registerBtn.onclick = () =>{
-  registerBtn.classList.add('active');
-  loginBtn.classList.remove('active');
-  document.querySelector('.account-form .login-form').classList.remove('active');
-  document.querySelector('.account-form .register-form').classList.add('active');
-};
+    const user = users.find(user => user.email === email && user.password === password);
 
-loginBtn.onclick = () =>{
-  registerBtn.classList.remove('active');
-  loginBtn.classList.add('active');
-  document.querySelector('.account-form .login-form').classList.add('active');
-  document.querySelector('.account-form .register-form').classList.remove('active');
-};
-
-let accountForm = document.querySelector('.account-form')
-
-document.querySelector('#account-btn').onclick = () =>{
-  accountForm.classList.add('active');
+    if (user) {
+        alert(`Welcome, ${user.username}!`);
+        // Store session information
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        // Redirect to dashboard or homepage
+        window.location.href = 'dashboard.html';
+    } else {
+        alert('Invalid email or password!');
+    }
 }
 
-document.querySelector('#close-form').onclick = () =>{
-  accountForm.classList.remove('active');
-};
+// Function to check if user is logged in (for session management)
+function checkUserSession() {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    
+    if (loggedInUser) {
+        document.getElementById('welcome-message').innerText = `Welcome back, ${loggedInUser.username}!`;
+        // Display user-specific content
+    } else {
+        window.location.href = 'login.html'; // Redirect to login if not logged in
+    }
+}
 
-var swiper = new Swiper(".home-slider", {
-  pagination: {
-    el: ".swiper-pagination",
-    clickable:true,
-  },
-  loop:true,
-  grabCursor:true,
-});
+// Function to handle user logout
+function logoutUser() {
+    localStorage.removeItem('loggedInUser');
+    alert('You have been logged out.');
+    window.location.href = 'login.html'; // Redirect to login page
+}
 
-var swiper = new Swiper(".home-courses-slider", {
-  loop:true,
-  grabCursor:true,
-  spaceBetween: 20,
-  breakpoints: {
-    0: {
-      slidesPerView: 1,
-    },
-    768: {
-      slidesPerView: 2,
-    },
-    991: {
-      slidesPerView: 3,
-    },
-  },
-});
-
-var swiper = new Swiper(".teachers-slider", {
-  loop:true,
-  grabCursor:true,
-  spaceBetween: 20,
-  breakpoints: {
-    0: {
-      slidesPerView: 1,
-    },
-    768: {
-      slidesPerView: 2,
-    },
-    991: {
-      slidesPerView: 3,
-    },
-  },
-});
-
-var swiper = new Swiper(".reviews-slider", {
-  loop:true,
-  grabCursor:true,
-  spaceBetween: 20,
-  breakpoints: {
-    0: {
-      slidesPerView: 1,
-    },
-    768: {
-      slidesPerView: 2,
-    },
-    991: {
-      slidesPerView: 3,
-    },
-  },
-});
-
-var swiper = new Swiper(".logo-slider", {
-  loop:true,
-  grabCursor:true,
-  spaceBetween: 20,
-  breakpoints: {
-    0: {
-      slidesPerView: 1,
-    },
-    450: {
-      slidesPerView: 2,
-    },
-    768: {
-      slidesPerView: 3,
-    },
-    991: {
-      slidesPerView: 4,
-    },
-    1200: {
-      slidesPerView: 5,
-    },
-  },
-});
-
-let accordion = document.querySelectorAll('.faq .accordion-container .accordion');
-
-accordion.forEach(acco =>{
-  acco.onclick = () =>{
-    accordion.forEach(dion => dion.classList.remove('active'));
-    acco.classList.toggle('active');
-  };
-});
-
-document.querySelector('.load-more .btn').onclick = () =>{
-  document.querySelectorAll('.courses .box-container .hide').forEach(show =>{
-    show.style.display = 'block';
-  });
-  document.querySelector('.load-more .btn').style.display = 'none';
-};
